@@ -8,7 +8,15 @@ const server = express();
 
 // Middlewares
 server.use(express.json());
-server.use(cors());
+
+// Configuración de CORS
+const corsOptions = {
+  origin: ['https://219food.vercel.app'], // Dominios permitidos
+  methods: ['GET', 'POST'], // Métodos permitidos
+  allowedHeaders: ['Content-Type', 'Authorization'], // Encabezados permitidos
+};
+
+server.use(cors(corsOptions)); // Aquí usas "server" en lugar de "app"
 
 // Rutas
 server.use("/Mercado_Pago", Mercado_Pago_Router);
