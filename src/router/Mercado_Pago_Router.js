@@ -3,8 +3,6 @@ const mercadopago = require("mercadopago");
 const dotenv = require("dotenv");
 dotenv.config();
 
-const menuData = require("../data/menuData"); // Archivo donde guardaste el menú
-
 const Mercado_Pago = Router();
 
 mercadopago.configure({
