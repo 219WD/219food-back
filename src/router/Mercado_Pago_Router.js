@@ -10,23 +10,21 @@ mercadopago.configure({
 });
 
 Mercado_Pago.post("/", async (req, res) => {
-  const { productId, quantity } = req.body;
+  const { title, description, image, price, quantity } = req.body;
 
   try {
-    // Validar que el producto exista en el arreglo
-    const product = menuData.find((item) => item.id === productId);
-    if (!product) {
-      return res.status(404).json({ error: "Producto no encontrado" });
+    if (!title || !description || !image || !price || !quantity) {
+      return res.status(400).json({ error: "Faltan datos del producto" });
     }
 
     // Crear preferencia en Mercado Pago
     const preference = {
       items: [
         {
-          title: product.title,
-          description: product.description,
-          picture_url: product.image,
-          unit_price: parseFloat(product.price),
+          title,
+          description,
+          picture_url: image,
+          unit_price: parseFloat(price),
           quantity: parseInt(quantity, 10),
           currency_id: "ARS",
         },
@@ -41,9 +39,10 @@ Mercado_Pago.post("/", async (req, res) => {
     const response = await mercadopago.preferences.create(preference);
     return res.status(200).json({ init_point: response.body.init_point });
   } catch (error) {
-    console.error(error.message);
+    console.error("Error al procesar la solicitud:", error.message, error.stack);
     return res.status(500).json({ error: "Hubo un error al procesar la solicitud" });
   }
 });
+
 
 module.exports = Mercado_Pago;
