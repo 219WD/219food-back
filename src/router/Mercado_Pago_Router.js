@@ -10,25 +10,23 @@ mercadopago.configure({
 });
 
 Mercado_Pago.post("/", async (req, res) => {
-  const { title, description, image, price, quantity } = req.body;
+  const items = req.body;
 
   try {
-    if (!title || !description || !image || !price || !quantity) {
-      return res.status(400).json({ error: "Faltan datos del producto" });
+    if (!items || items.length === 0) {
+      return res.status(400).json({ error: "El carrito está vacío" });
     }
 
     // Crear preferencia en Mercado Pago
     const preference = {
-      items: [
-        {
-          title,
-          description,
-          picture_url: image,
-          unit_price: parseFloat(price),
-          quantity: parseInt(quantity, 10),
-          currency_id: "ARS",
-        },
-      ],
+      items: items.map((item) => ({
+        title: item.title,
+        description: item.description,
+        picture_url: item.image,
+        unit_price: parseFloat(item.price),
+        quantity: parseInt(item.quantity, 10),
+        currency_id: "ARS",
+      })),
       back_urls: {
         success: process.env.SUCCESS_URL || "http://localhost:5173/",
         failure: process.env.FAILURE_URL || "http://localhost:3000/fallo",
